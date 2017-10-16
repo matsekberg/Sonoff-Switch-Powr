@@ -59,7 +59,7 @@ float voltage = NAN;
 float power = NAN;
 float calPower = 60.0;
 float energy = NAN;  // kWh
-unsigned long lastEnergySample = millis();
+unsigned long lastEnergySample = 0;
 
 boolean sendSensors = false;
 void calibrate(void);
@@ -151,7 +151,7 @@ void handleStatusChange() {
 
   if (sendSensors)
   {
-    if (isnan(current) || isnan(voltage) || isnan(power))
+    if (isnan(current) || isnan(voltage) || isnan(power) || isnan(energy))
     {
       Serial.println(F("No sensor data"));
     }    {
@@ -159,6 +159,7 @@ void handleStatusChange() {
       json["i"] = current;
       json["u"] = voltage;
       json["p"] = power;
+      json["e"] = energy;
       String jsonStr;
       json.printTo(jsonStr);
       mqttPublishMessage(sensorTopic.c_str(), jsonStr.c_str());
@@ -279,8 +280,11 @@ void loop() {
     voltage = hlw8012.getVoltage();
     current = hlw8012.getCurrent();
     power = hlw8012.getActivePower();
-    float hours = (millis() - lastEnegrySample) / 1000.0 / 3600.0;
-    energy += power / hours;
+    if (lastEnergySample != 0) {
+      float hours = (millis() - lastEnegrySample) / 1000.0 / 3600.0;
+      energy += power / hours;
+    }
+    lastEnergySample = millis();
      
     Serial.print("[HLW] Active Power (W)    : "); Serial.println(power);
     Serial.print("[HLW] Voltage (V)         : "); Serial.println(voltage);

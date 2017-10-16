@@ -58,6 +58,9 @@ float current = NAN;
 float voltage = NAN;
 float power = NAN;
 float calPower = 60.0;
+float energy = NAN;  // kWh
+unsigned long lastEnergySample = millis();
+
 boolean sendSensors = false;
 void calibrate(void);
 
@@ -276,11 +279,13 @@ void loop() {
     voltage = hlw8012.getVoltage();
     current = hlw8012.getCurrent();
     power = hlw8012.getActivePower();
-
-
+    float hours = (millis() - lastEnegrySample) / 1000.0 / 3600.0;
+    energy += power / hours;
+     
     Serial.print("[HLW] Active Power (W)    : "); Serial.println(power);
     Serial.print("[HLW] Voltage (V)         : "); Serial.println(voltage);
     Serial.print("[HLW] Current (A)         : "); Serial.println(current);
+    Serial.print("[HLW] Energyt (Wh)        : "); Serial.println(energy);
     Serial.print("[HLW] Apparent Power (VA) : "); Serial.println(hlw8012.getApparentPower());
     Serial.print("[HLW] Power Factor (%)    : "); Serial.println((int) (100 * hlw8012.getPowerFactor()));
     Serial.println();

@@ -281,7 +281,7 @@ void loop() {
     current = hlw8012.getCurrent();
     power = hlw8012.getActivePower();
     if (lastEnergySample != 0) {
-      float hours = (millis() - lastEnegrySample) / 1000.0 / 3600.0;
+      float hours = (millis() - lastEnergySample) / 1000.0 / 3600.0;
       energy += power / hours;
     }
     lastEnergySample = millis();
@@ -289,7 +289,7 @@ void loop() {
     Serial.print("[HLW] Active Power (W)    : "); Serial.println(power);
     Serial.print("[HLW] Voltage (V)         : "); Serial.println(voltage);
     Serial.print("[HLW] Current (A)         : "); Serial.println(current);
-    Serial.print("[HLW] Energyt (Wh)        : "); Serial.println(energy);
+    Serial.print("[HLW] Energyt (Wh)        : "); Serial.println(energy);
     Serial.print("[HLW] Apparent Power (VA) : "); Serial.println(hlw8012.getApparentPower());
     Serial.print("[HLW] Power Factor (%)    : "); Serial.println((int) (100 * hlw8012.getPowerFactor()));
     Serial.println();
